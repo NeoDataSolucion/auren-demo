@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Demo interactiva de inventarios y finanzas para pequeñas empresas.">
+  <title>AUREN Finance | Demo</title>
+  <link rel="icon" type="image/png" href="assets/auren-monogram.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="auren.css">
+  <link rel="stylesheet" href="suite-embed.css">
+  <script src="suite-bridge.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><img class="brand-logo" src="assets/auren-monogram.png" alt="" width="52" height="38"><div><strong>AUREN<span class="brand-dot">.</span></strong><span>FINANCE / BUSINESS SYSTEMS</span></div></div>
+      <nav aria-label="Navegación principal">
+        <button class="nav-item" data-view="import"><span class="nav-icon">↑</span><span>Cargar datos</span></button>
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">⌂</span><span>Resumen</span></button>
+        <button class="nav-item" data-view="inventory"><span class="nav-icon">◇</span><span>Inventario</span></button>
+        <button class="nav-item" data-view="movements"><span class="nav-icon">⇄</span><span>Movimientos</span></button>
+        <button class="nav-item" data-view="finance"><span class="nav-icon">▥</span><span>Finanzas</span></button>
+      </nav>
+      <div class="demo-note"><span>Entorno demostrativo</span><p>Productos, movimientos e importes completamente ficticios.</p></div>
+      <button class="nav-item reset-button" id="resetDemo"><span class="nav-icon">↻</span><span>Restablecer demo</span></button>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" aria-label="Abrir menú">☰</button>
+        <div><p class="eyebrow">AUREN / FINANCE</p><h1 id="pageTitle">Resumen general</h1></div>
+        <div class="top-actions">
+          <label class="period-picker">Periodo de muestra<select id="periodSelect"><option>Octubre 2026</option></select></label>
+          <button class="profile" aria-label="Perfil de demostración">AF</button>
+        </div>
+      </header>
+
+      <div class="content">
+<div class="workspace-caption"><span>BUSINESS OVERVIEW</span><span>DEMO INTERACTIVA / DATOS LOCALES</span></div>
+        <section class="view" id="importView">
+          <div class="section-toolbar"><div><span class="eyebrow">IMPORTACIÓN LOCAL</span><h2>Cargar inventario inicial</h2><p>Descarga la plantilla, llénala y revisa los registros antes de confirmar.</p></div><button class="primary-button" id="downloadTemplate">Descargar plantilla Excel</button></div>
+          <article class="panel import-panel">
+            <label for="importFile">Selecciona un archivo Excel (.xlsx) o CSV</label>
+            <input id="importFile" type="file" accept=".xlsx,.csv">
+            <p>Encabezados: SKU, Producto, Categoría, Existencia, Mínimo, Costo y Precio. Una fila por producto; cantidades enteras e importes sin símbolos de moneda. Máximo 5,000 productos y 5 MB. Se lee la primera hoja.</p>
+            <p>Esta carga <strong>reemplaza el inventario y empieza una operación nueva</strong>: elimina los movimientos y resultados anteriores de esta demo. Descarga tu respaldo antes de confirmar. Los archivos se procesan en tu navegador.</p>
+            <button class="action-button" id="downloadBackup">Descargar respaldo actual</button>
+            <p id="importSummary" role="status">Selecciona un archivo para revisar su contenido.</p>
+            <div class="table-wrap"><table><thead><tr><th>Fila</th><th>SKU</th><th>Producto</th><th>Existencia</th><th>Revisión</th></tr></thead><tbody id="importPreview"></tbody></table></div>
+            <label class="import-consent"><input id="importConsent" type="checkbox"> Entiendo que se reemplazarán el inventario y los movimientos actuales.</label>
+            <button class="primary-button" id="confirmImport" disabled>Confirmar carga</button>
+            <p>Los registros se guardan en este navegador. “Restablecer demo” permite volver a los datos ficticios. La importación de ventas y gastos se incorporará en una siguiente etapa.</p>
+          </article>
+        </section>
+        <section class="view active" id="dashboardView">
+          <div class="welcome-card inventory-welcome">
+            <div><span class="badge">Información actualizada</span><h2>Cada movimiento.<br><em>Una decisión mejor.</em></h2><p>Controla existencias, registra entradas y ventas, identifica productos por reponer y consulta el resultado estimado de la operación.</p></div>
+            <div class="health-score"><small>Salud operativa</small><strong id="healthScore">0%</strong><span id="healthLabel">Calculando</span></div>
+          </div>
+          <div class="kpi-grid">
+            <article class="kpi-card"><div class="kpi-icon blue">$</div><div><span>Ventas del mes</span><strong id="salesKpi">$0</strong><small id="salesCaption">0 operaciones</small></div></article>
+            <article class="kpi-card"><div class="kpi-icon green">↗</div><div><span>Utilidad estimada</span><strong id="profitKpi">$0</strong><small id="marginCaption">0% de margen</small></div></article>
+            <article class="kpi-card"><div class="kpi-icon purple">◇</div><div><span>Valor del inventario</span><strong id="stockValueKpi">$0</strong><small id="unitsCaption">0 unidades</small></div></article>
+            <article class="kpi-card"><div class="kpi-icon amber">!</div><div><span>Stock bajo</span><strong id="lowStockKpi">0</strong><small>Productos por reponer</small></div></article>
+          </div>
+          <div class="dashboard-grid">
+            <article class="panel chart-panel"><div class="panel-heading"><div><span class="eyebrow">RESULTADOS SEMANALES</span><h3>Ventas y utilidad bruta</h3></div><span class="legend"><i></i> Ventas <i></i> Utilidad bruta</span></div><div class="area-chart finance-chart" id="weeklyChart"></div></article>
+            <article class="panel attention-panel"><div class="panel-heading"><div><span class="eyebrow">ALERTAS</span><h3>Productos por reponer</h3></div></div><div id="lowStockList"></div><button class="text-button" data-go="inventory">Revisar inventario</button></article>
+          </div>
+        </section>
+
+        <section class="view" id="inventoryView">
+          <div class="section-toolbar"><div><span class="eyebrow">CATÁLOGO Y EXISTENCIAS</span><h2>Inventario</h2><p>Consulta costos, precios, existencias y alertas de reposición.</p></div><button class="primary-button" id="downloadInventory">Descargar inventario CSV</button></div>
+          <div class="panel table-panel">
+            <div class="filters"><label class="search-box">⌕<input id="productSearch" type="search" placeholder="Buscar producto o categoría"></label><select id="categoryFilter"><option value="all">Todas las categorías</option></select><select id="stockFilter"><option value="all">Todos los niveles</option><option value="low">Stock bajo</option><option value="ok">Stock suficiente</option></select><span class="result-count" id="productCount"></span></div>
+            <div class="table-wrap"><table><thead><tr><th>SKU</th><th>Producto</th><th>Categoría</th><th>Existencia</th><th>Mínimo</th><th>Costo</th><th>Precio</th><th>Estado</th></tr></thead><tbody id="inventoryTable"></tbody></table></div>
+            <div class="empty-state" id="inventoryEmpty" hidden>No encontramos productos con esos filtros.</div>
+          </div>
+        </section>
+
+        <section class="view" id="movementsView">
+          <div class="section-toolbar"><div><span class="eyebrow">ENTRADAS Y SALIDAS</span><h2>Registrar movimiento</h2><p>Simula una compra, una venta o un ajuste de inventario.</p></div></div>
+          <div class="movement-layout">
+            <form class="panel movement-form" id="movementForm">
+              <div class="field-grid"><label>Tipo<select id="movementType"><option value="sale">Venta</option><option value="purchase">Compra</option><option value="adjustment">Ajuste de entrada</option></select></label><label>Producto<select id="movementProduct"></select></label><label>Cantidad<input id="movementQty" type="number" min="1" value="1" required></label></div>
+              <div class="movement-preview" id="movementPreview"></div>
+              <button class="primary-button" type="submit">Registrar movimiento</button>
+            </form>
+            <article class="panel recent-panel"><div class="panel-heading"><div><span class="eyebrow">ACTIVIDAD</span><h3>Movimientos recientes</h3></div></div><div id="movementList"></div></article>
+          </div>
+        </section>
+
+        <section class="view" id="financeView">
+          <div class="section-toolbar"><div><span class="eyebrow">RESULTADO DEL PERIODO</span><h2>Finanzas</h2><p>Resumen de ingresos, costos, gastos y utilidad estimada.</p></div><button class="primary-button" id="downloadFinance">Descargar resumen CSV</button></div>
+          <div class="finance-grid">
+            <article class="panel statement-panel"><div class="panel-heading"><div><span class="eyebrow">ESTADO DE RESULTADOS</span><h3>Octubre 2026</h3></div></div><div class="statement" id="statement"></div></article>
+            <article class="panel expense-panel"><div class="panel-heading"><div><span class="eyebrow">GASTOS OPERATIVOS</span><h3>Distribución del mes</h3></div></div><div class="donut-wrap"><div class="donut" id="expenseDonut"><span id="expenseTotal">$0</span></div><div id="expenseLegend"></div></div></article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="identity.js"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+  <script src="import.js"></script>
+</body>
+</html>

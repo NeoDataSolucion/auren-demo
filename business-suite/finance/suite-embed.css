@@ -1,0 +1,9 @@
+.suite-embedded .app-shell{display:block;min-height:0}
+.suite-embedded .sidebar{position:static;width:auto;height:auto;padding:12px;background:#f4f0e9;border:0}
+.suite-embedded .sidebar .brand,.suite-embedded .demo-note,.suite-embedded .topbar,.suite-embedded #resetDemo{display:none}
+.suite-embedded .sidebar nav{display:flex;flex-wrap:wrap;gap:8px}
+.suite-embedded .sidebar .nav-item{width:auto;margin:0;color:#19354b;padding:10px 14px}
+.suite-embedded .sidebar .nav-item.active{background:#19354b;color:#fff}
+.suite-embedded main{margin:0;min-width:0}
+.suite-embedded .content{padding:16px}
+@media(max-width:768px){.suite-embedded .sidebar{transform:none;z-index:auto}.suite-embedded .sidebar nav{display:flex}}
